@@ -86,3 +86,51 @@ class TestSplitDelimiter(unittest.TestCase):
             TextNode("", TextType.TEXT),
         ]
         self.assertEqual(new_nodes, expected_nodes)
+    
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+    
+    def test_extract_markdown_images_multiple(self):
+        matches = extract_markdown_images(
+            "This is text with a ![image1](https://i.imgur.com/zjjcJKZ.png) and ![image2](https://i.imgur.com/asdwqwe.png)"
+        )
+        self.assertListEqual(
+            [
+                ("image1", "https://i.imgur.com/zjjcJKZ.png"),
+                ("image2", "https://i.imgur.com/asdwqwe.png"),
+            ],
+            matches
+        )
+    
+    def test_extract_markdown_links_multiple(self):
+        matches = extract_markdown_links(
+            "This is text with a [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        )
+        self.assertListEqual(
+            [
+                ("to boot dev", "https://www.boot.dev"),
+                ("to youtube", "https://www.youtube.com/@bootdotdev"),
+            ],
+            matches
+        )
+    
+    def test_extract_markdown_links_single(self):
+        matches = extract_markdown_links(
+            "This is text with a [to boot dev](https://www.boot.dev)"
+        )
+        self.assertListEqual([("to boot dev", "https://www.boot.dev")], matches)
+    
+    def test_extract_image_no_image(self):
+        matches = extract_markdown_images(
+            "This is text with no image"
+        )
+        self.assertListEqual([], matches)
+    
+    def test_extract_link_no_link(self):
+        matches = extract_markdown_links(
+            "This is text with no link"
+        )
+        self.assertListEqual([], matches)
