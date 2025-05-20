@@ -1,7 +1,11 @@
 import unittest
+from blocknode import *
 from block_helper_functions import *
 
 class TestBlockHelperFunctions(unittest.TestCase):
+    # 
+    # Tests for markdown_to_blocks function
+    # 
     def test_markdown_to_blocks(self):
         md = """
 This is **bolded** paragraph
@@ -74,3 +78,48 @@ with another
                 "It's right there in the middle!",
             ],
         )
+
+    # 
+    # Tests for block_to_block_type function
+    # 
+
+    def test_block_to_block_type_paragraph(self):
+        block = "This is a paragraph with some text."
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.PARAGRAPH)
+
+    def test_block_to_block_type_heading(self):
+        block = "# This is a heading"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.HEADING)
+    
+    def test_block_to_block_type_code_block(self):
+        block = "```\nThis is a code block\n```"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.CODE_BLOCK)
+
+    def test_block_to_block_type_blockquote(self):
+        block = "> This is a blockquote\n> with multiple lines\n> of text"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.BLOCKQUOTE)
+    
+    def test_block_to_block_type_unordered_list(self):
+        block = "- Item 1\n- Item 2\n- Item 3"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.UNORDERED_LIST)
+
+    def test_block_to_block_type_ordered_list(self):
+        block = "1. Item 1\n2. Item 2\n3. Item 3"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.ORDERED_LIST)
+
+    def test_block_to_block_type_bad_ordered_list(self):
+        block = "1. Item 1\n2. Item 2\n- Item 3"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.PARAGRAPH)
+    
+    def test_block_to_block_type_bad_unordered_list(self):
+        block = "- Item 1\n- Item 2\n1. Item 3"
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.PARAGRAPH)
+    

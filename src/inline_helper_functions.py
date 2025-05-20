@@ -1,6 +1,8 @@
 from textnode import *
 import re
 
+# Takes a List of TextNodes, an inline delimiter, and a text type
+# Splits the TextNodes at the delimiter and returns a new List of TextNodes including the delimited types
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
@@ -17,14 +19,19 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             new_nodes.append(node)
     return new_nodes
 
+# Used by split_nodes_image to find image markdown
+# Returns a List of Tuples with the image alt text and src
 def extract_markdown_images(text):
     matches = re.findall(r"!\[([^]]+)\]\(([^)]+)\)", text)
     return matches
 
+# Used by split_nodes_link to find link markdown
+# Returns a List of Tuples with the link text and url
 def extract_markdown_links(text):
     matches = re.findall(r"(?<!!)\[([^]]+)\]\(([^)]+)\)", text)
     return matches
 
+# Similar to split_nodes_delimiter, but for images
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -44,7 +51,7 @@ def split_nodes_image(old_nodes):
             new_nodes.append(node)
     return new_nodes
 
-
+# Similar to split_nodes_image, but for links
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -64,6 +71,7 @@ def split_nodes_link(old_nodes):
             new_nodes.append(node)
     return new_nodes
 
+# Uses the above helper functions to convert a String of text into a list of TextNodes
 def text_to_textnodes(text):
     new_textnode = TextNode(text, TextType.TEXT)
     new_nodes = []
