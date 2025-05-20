@@ -18,12 +18,48 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return new_nodes
 
 def extract_markdown_images(text):
-    matches = re.findall(r"\[([^]]+)\]\(([^)]+)\)", text)
+    matches = re.findall(r"!\[([^]]+)\]\(([^)]+)\)", text)
     return [(match[0], match[1]) for match in matches]
 
-# text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
-# print(extract_markdown_links(text))
-# [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
 def extract_markdown_links(text):
-    matches = re.findall(r"\[([^]]+)\]\(([^)]+)\)", text)
+    matches = re.findall(r"(?<!!)\[([^]]+)\]\(([^)]+)\)", text)
     return [(match[0], match[1]) for match in matches]
+
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        if isinstance(node, TextNode) and node.text_type == TextType.TEXT:
+            image_tuples = extract_markdown_images(node.text)
+            working_string = node.text
+            for image_alt, image_src in image_tuples:
+                parts = working_string.split(f"![{image_alt}]({image_src})", 1)
+                if(parts[0] != ""):
+                    new_nodes.append(TextNode(parts[0], TextType.TEXT))
+                new_nodes.append(TextNode(image_alt, TextType.IMAGE, image_src))
+                if len(parts) > 1:
+                    working_string = parts[1]
+            if working_string != "":
+                new_nodes.append(TextNode(working_string, TextType.TEXT))
+        else:
+            new_nodes.append(node)
+    return new_nodes
+
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        if isinstance(node, TextNode) and node.text_type == TextType.TEXT:
+            link_tuples = extract_markdown_links(node.text)
+            working_string = node.text
+            for link_text, link_url in link_tuples:
+                parts = working_string.split(f"[{link_text}]({link_url})", 1)
+                if(parts[0] != ""):
+                    new_nodes.append(TextNode(parts[0], TextType.TEXT))
+                new_nodes.append(TextNode(link_text, TextType.LINK, link_url))
+                if len(parts) > 1:
+                    working_string = parts[1]
+            if working_string != "":
+                new_nodes.append(TextNode(working_string, TextType.TEXT))
+        else:
+            new_nodes.append(node)
+    return new_nodes
