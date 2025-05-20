@@ -1,9 +1,9 @@
 import unittest
-from helper_functions import *
+from inline_helper_functions import *
 from textnode import *
 from htmlnode import *
 
-class TestSplitDelimiter(unittest.TestCase):
+class TestInlineHelpers(unittest.TestCase):
     def test_split_nodes_delimiter(self):
         node = TextNode("This is a string with a `code block` in it", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
