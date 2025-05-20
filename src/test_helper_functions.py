@@ -286,3 +286,70 @@ class TestSplitDelimiter(unittest.TestCase):
             ],
             new_nodes
         )
+
+    # Tests for text_to_textnodes function
+
+    def test_text_to_textnodes(self):
+        text = "String with **bold**, _italic_, `code`, ![image](https://i.imgur.com/example.png), and [link](https://example.com) text."
+        new_nodes = text_to_textnodes(text)
+        expected_nodes = [
+            TextNode("String with ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(", ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(", ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(", ", TextType.TEXT),
+            TextNode("image", TextType.IMAGE, "https://i.imgur.com/example.png"),
+            TextNode(", and ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://example.com"),
+            TextNode(" text.", TextType.TEXT)
+        ]
+        self.assertEqual(new_nodes, expected_nodes)
+
+    def test_text_to_textnodes_reverse_order(self):
+        text = "String with [link](https://example.com), ![image](https://i.imgur.com/example.png), `code`, _italic_, and **bold** text."
+        new_nodes = text_to_textnodes(text)
+        expected_nodes = [
+            TextNode("String with ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://example.com"),
+            TextNode(", ", TextType.TEXT),
+            TextNode("image", TextType.IMAGE, "https://i.imgur.com/example.png"),
+            TextNode(", ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(", ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(", and ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" text.", TextType.TEXT)
+        ]
+        self.assertEqual(new_nodes, expected_nodes)
+    
+    def test_text_to_textnodes_empty_string(self):
+        text = ""
+        new_nodes = text_to_textnodes(text)
+        expected_nodes = []
+        self.assertEqual(new_nodes, expected_nodes)
+
+    def test_text_to_textnodes_no_delimiters(self):
+        text = "This is a string with no delimiters."
+        new_nodes = text_to_textnodes(text)
+        expected_nodes = [TextNode("This is a string with no delimiters.", TextType.TEXT)]
+        self.assertEqual(new_nodes, expected_nodes)
+
+    def test_text_to_textnodes_unclosed_delimiter(self):
+        bold_text = "This is a string with an **unclosed delimiter"
+        italic_text = "This is a string with an _unclosed delimiter"
+        code_text = "This is a string with an `unclosed delimiter"
+        image_text = "This is a string with an ![image](https://i.imgur.com/example.png) and an **unclosed delimiter"
+        link_text = "This is a string with an [link](https://example.com) and an **unclosed delimiter"
+        with self.assertRaises(Exception):
+            text_to_textnodes(bold_text)
+        with self.assertRaises(Exception):
+            text_to_textnodes(italic_text)
+        with self.assertRaises(Exception):
+            text_to_textnodes(code_text)
+        with self.assertRaises(Exception):
+            text_to_textnodes(image_text)
+        with self.assertRaises(Exception):
+            text_to_textnodes(link_text)
