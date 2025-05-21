@@ -58,6 +58,13 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(html_node.tag, "b")
         self.assertEqual(html_node.value, "This is a bold text")
         self.assertEqual(html_node.props, None)
+    
+    def test_code_textnode(self):
+        node = TextNode("This is a code text", TextType.CODE)
+        html_node = text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "code")
+        self.assertEqual(html_node.value, "This is a code text")
+        self.assertEqual(html_node.props, None)
 
 
 if __name__ == "__main__":

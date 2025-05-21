@@ -11,7 +11,7 @@ def markdown_to_blocks(markdown):
 # Takes a block String and returns a BlockType
 def block_to_block_type(block):
     match block:
-        case block if block.startswith("# "):
+        case block if block.startswith("#"):
             return BlockType.HEADING
         case block if block.startswith("```") and block.endswith("```"):
             return BlockType.CODE_BLOCK

@@ -19,20 +19,114 @@ class TestDocHelperFunctions(unittest.TestCase):
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>"
         )
 
-    # def test_codeblock(self):
-    #     md = """
-    # ```
-    # This is text that _should_ remain
-    # the **same** even with inline stuff
-    # ```
-    # """
+    def test_codeblock(self):
+        md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
 
-    #     node = markdown_to_html_node(md)
-    #     html = node.to_html()
-    #     self.assertEqual(
-    #         html,
-    #         "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
-    #     )
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>"
+        )
+    
+    def test_blockquote(self):
+        md = """
+> This is a blockquote
+> with multiple lines
+> and _italic_ text
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a blockquote with multiple lines and <i>italic</i> text</blockquote></div>"
+        )
+    
+    def test_unordered_list(self):
+        md = """
+- This is an unordered list
+- with multiple items
+- and _italic_ text
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>This is an unordered list</li><li>with multiple items</li><li>and <i>italic</i> text</li></ul></div>"
+        )
+    
+    def test_ordered_list(self):
+        md = """
+1. This is an ordered list
+2. with multiple items
+3. and **bold** text
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>This is an ordered list</li><li>with multiple items</li><li>and <b>bold</b> text</li></ol></div>"
+        )
+
+    def test_headings(self):
+        md = """
+# This is an h1 heading
+
+## This is an h2 heading
+
+### This is an h3 heading
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>This is an h1 heading</h1><h2>This is an h2 heading</h2><h3>This is an h3 heading</h3></div>"
+        )
+    
+    def test_mixed_content(self):
+        md = """
+# This is an h1 heading
+
+## This is an h2 heading
+
+This is a paragraph that follows the headings
+
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+1. Potato
+2. Tomato
+3. A cat?!
+```
+
+> This is a blockquote
+> with multiple lines
+> and _italic_ text
+
+- This is an unordered list
+- with multiple items
+- and _italic_ text
+
+1. This is an ordered list
+2. with multiple items
+3. and **bold** text
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>This is an h1 heading</h1><h2>This is an h2 heading</h2><p>This is a paragraph that follows the headings</p><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n1. Potato\n2. Tomato\n3. A cat?!\n</code></pre><blockquote>This is a blockquote with multiple lines and <i>italic</i> text</blockquote><ul><li>This is an unordered list</li><li>with multiple items</li><li>and <i>italic</i> text</li></ul><ol><li>This is an ordered list</li><li>with multiple items</li><li>and <b>bold</b> text</li></ol></div>"
+        )
