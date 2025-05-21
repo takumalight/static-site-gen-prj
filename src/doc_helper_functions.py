@@ -24,8 +24,8 @@ def code_block_cleaner(text):
 # Strip markers from each line within a blockquote
 def blockquote_cleaner(text):
     lines = text.split("\n")
-    cleaned_lines = [line[2:] for line in lines if line.startswith("> ")]
-    return "\n".join(cleaned_lines)
+    cleaned_lines = list(map(lambda line: line[2:], lines))
+    return "<br/>".join(cleaned_lines)
 
 # Strip markers from each line within an unordered list
 def unordered_list_cleaner(text):

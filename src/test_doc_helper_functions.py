@@ -48,7 +48,7 @@ the **same** even with inline stuff
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><blockquote>This is a blockquote with multiple lines and <i>italic</i> text</blockquote></div>"
+            "<div><blockquote>This is a blockquote<br/>with multiple lines<br/>and <i>italic</i> text</blockquote></div>"
         )
     
     def test_unordered_list(self):
@@ -63,6 +63,22 @@ the **same** even with inline stuff
         self.assertEqual(
             html,
             "<div><ul><li>This is an unordered list</li><li>with multiple items</li><li>and <i>italic</i> text</li></ul></div>"
+        )
+
+    def test_unordered_list_of_links(self):
+        md = """
+- [This is a link](http://example.com)
+- [This is another link](http://example.com)
+- [This is a third link](http://example.com)
+"""
+        node = markdown_to_html_node(md)
+        # print("\n\n///\n")
+        # print(node.__repr__())
+        # print("\n///\n\n")
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li><a href=\"http://example.com\" target=\"_blank\">This is a link</a></li><li><a href=\"http://example.com\" target=\"_blank\">This is another link</a></li><li><a href=\"http://example.com\" target=\"_blank\">This is a third link</a></li></ul></div>"
         )
     
     def test_ordered_list(self):
@@ -128,5 +144,22 @@ the **same** even with inline stuff
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><h1>This is an h1 heading</h1><h2>This is an h2 heading</h2><p>This is a paragraph that follows the headings</p><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n1. Potato\n2. Tomato\n3. A cat?!\n</code></pre><blockquote>This is a blockquote with multiple lines and <i>italic</i> text</blockquote><ul><li>This is an unordered list</li><li>with multiple items</li><li>and <i>italic</i> text</li></ul><ol><li>This is an ordered list</li><li>with multiple items</li><li>and <b>bold</b> text</li></ol></div>"
+            "<div><h1>This is an h1 heading</h1><h2>This is an h2 heading</h2><p>This is a paragraph that follows the headings</p><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n1. Potato\n2. Tomato\n3. A cat?!\n</code></pre><blockquote>This is a blockquote<br/>with multiple lines<br/>and <i>italic</i> text</blockquote><ul><li>This is an unordered list</li><li>with multiple items</li><li>and <i>italic</i> text</li></ul><ol><li>This is an ordered list</li><li>with multiple items</li><li>and <b>bold</b> text</li></ol></div>"
+        )
+    
+    def test_blockquotes_again(self):
+        md = """
+> This is a blockquote
+> with multiple lines
+> of text
+> 
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
+        """
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a blockquote<br/>with multiple lines<br/>of text<br/><br/>\"I am in fact a Hobbit in all but size.\"<br/><br/>-- J.R.R. Tolkien</blockquote></div>"
         )

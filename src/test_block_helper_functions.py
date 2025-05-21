@@ -1,6 +1,7 @@
 import unittest
 from blocknode import *
 from block_helper_functions import *
+from doc_helper_functions import build_html_node
 
 class TestBlockHelperFunctions(unittest.TestCase):
     # 
@@ -123,3 +124,13 @@ with another
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH)
     
+    # 
+    # Tests for build_html_node function
+    # 
+    def test_build_html_node_blockquote(self):
+        block_type = BlockType.BLOCKQUOTE
+        block_text = "> This is a blockquote\n> with multiple lines\n> of text"
+        node = build_html_node(block_type, block_text)
+        html = node.to_html()
+        self.assertEqual(html, "<blockquote>This is a blockquote<br/>with multiple lines<br/>of text</blockquote>")
+

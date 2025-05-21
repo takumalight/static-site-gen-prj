@@ -15,7 +15,7 @@ def block_to_block_type(block):
             return BlockType.HEADING
         case block if block.startswith("```") and block.endswith("```"):
             return BlockType.CODE_BLOCK
-        case block if all(map(lambda line: line.startswith("> "), block.split("\n"))):
+        case block if all(map(lambda line: line.startswith(">"), block.split("\n"))):
             return BlockType.BLOCKQUOTE
         case block if all(map(lambda line: line.startswith("- "), block.split("\n"))):
             return BlockType.UNORDERED_LIST

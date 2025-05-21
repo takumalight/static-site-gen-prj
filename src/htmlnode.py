@@ -9,7 +9,7 @@ class HTMLNode:
         raise NotImplementedError("Not implemented yet")
 
     def props_to_html(self):
-        if self.props is None:
+        if self.props is None or self.props == "":
             return ""
         return " " + " ".join(map(lambda x: f'{x[0]}="{x[1]}"', self.props.items()))
 
